@@ -1,15 +1,5 @@
 'use strict';
 
-// Tasks for rewriting:
-//   - Apply optimizations of computing resources: processor, memory
-//   - Minimize cognitive complexity
-//   - Respect SRP and SoC
-//   - Improve readability (understanding), reliability
-//   - Optimize for maintainability, reusability, flexibility
-//   - Make code testable
-//   - Implement simple unittests without frameworks
-//   - Try to implement in multiple paradigms: OOP, FP, procedural, mixed
-
 const data = `city,population,area,density,country
   Shanghai,24256800,6340,3826,China
   Delhi,16787941,1484,11313,India
@@ -46,13 +36,12 @@ const addPercentFromColumnToTable = (table, columnIndex) => {
     return updatedTable;
 }
 
-const sortTable = (table, colIndex, type = 'desc') => {
+const sortByColumnIndex = (table, colIndex, type = 'desc') => {
     return table.toSorted((row1, row2) => type === 'desc' ?
         row2[colIndex] - row1[colIndex] : row1[colIndex] - row2[colIndex]);
 }
 
-const columnWidths = [18, 10, 8, 8, 18, 6];
-const formatRow = (row) => row.reduce((line, cell, index) => {
+const formatRow = (row, columnWidths) => row.reduce((line, cell, index) => {
     const columnWidth = columnWidths[index];
     const formattedRow = index === 0 ? cell.padEnd(columnWidth) : cell.padStart(columnWidth);
     return line + formattedRow;
@@ -64,7 +53,8 @@ const table = normalizeTable(data);
 const densityColumnIndex = 3;
 const updatedTableWithDensity = addPercentFromColumnToTable(table, densityColumnIndex);
 const densityPercentColumnIndex = 5;
-const sortedTableByDensity = sortTable(updatedTableWithDensity, densityPercentColumnIndex)
-const prettifiedTable = sortedTableByDensity.map(formatRow);
+const sortedTableByDensity = sortByColumnIndex(updatedTableWithDensity, densityPercentColumnIndex)
+const columnWidths = [18, 10, 8, 8, 18, 6];
+const prettifiedTable = sortedTableByDensity.map((row) => formatRow(row, columnWidths));
 
 outputToConsole(prettifiedTable);
