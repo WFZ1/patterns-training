@@ -12,7 +12,7 @@ const data = `city,population,area,density,country
   New York City,8537673,784,10892,United States
   Bangkok,8280925,1569,5279,Thailand`;
   
-const normalizeTable = (data) => {
+export const normalizeTable = (data) => {
     const lines = data.split('\n');
     const bodyLines = lines.slice(1);
     const table = bodyLines.map((line) => line.split(','))
@@ -20,10 +20,10 @@ const normalizeTable = (data) => {
     return table;
 }
 
-const getMax = (values) => values.reduce((maxValue, value) => Math.max(maxValue, value));
-const getPercentFromNumber = (value, total) => Math.round(value * 100 / total);
+export const getMax = (values) => values.reduce((maxValue, value) => Math.max(maxValue, value));
+export const getPercentFromNumber = (value, total) => Math.round(value * 100 / total);
 
-const addPercentFromColumnToTable = (table, columnIndex) => {
+export const addPercentFromColumnToTable = (table, columnIndex) => {
     const values = table.map((cells) => cells[columnIndex]);
     const maxValue = getMax(values);
     
@@ -36,18 +36,18 @@ const addPercentFromColumnToTable = (table, columnIndex) => {
     return updatedTable;
 }
 
-const sortByColumnIndex = (table, colIndex, type = 'desc') => {
+export const sortByColumnIndex = (table, colIndex, type = 'desc') => {
     return table.toSorted((row1, row2) => type === 'desc' ?
         row2[colIndex] - row1[colIndex] : row1[colIndex] - row2[colIndex]);
 }
 
-const formatRow = (row, columnWidths) => row.reduce((line, cell, index) => {
+export const formatRow = (row, columnWidths) => row.reduce((line, cell, index) => {
     const columnWidth = columnWidths[index];
     const formattedRow = index === 0 ? cell.padEnd(columnWidth) : cell.padStart(columnWidth);
     return line + formattedRow;
 }, '');
 
-const outputToConsole = (array) => array.forEach((item) => console.log(item));
+export const outputToConsole = (array) => array.forEach((item) => console.log(item));
 
 const table = normalizeTable(data);
 const densityColumnIndex = 3;
