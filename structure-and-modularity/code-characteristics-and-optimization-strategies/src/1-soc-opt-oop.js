@@ -12,10 +12,10 @@ const data = `city,population,area,density,country
   New York City,8537673,784,10892,United States
   Bangkok,8280925,1569,5279,Thailand`;
 
-const getMax = (values) => values.reduce((maxValue, value) => Math.max(maxValue, value));
-const getPercentFromNumber = (value, total) => Math.round(value * 100 / total);
+export const getMax = (values) => values.reduce((maxValue, value) => Math.max(maxValue, value));
+export const getPercentFromNumber = (value, total) => Math.round(value * 100 / total);
 
-class Table {
+export class Table {
     static normalize (data) {
         const lines = data.split('\n');
         const bodyLines = lines.slice(1);
