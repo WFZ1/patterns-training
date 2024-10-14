@@ -33,16 +33,22 @@ const normalizeTable = (data) => {
 const getMax = (values) => values.reduce((maxValue, value) => Math.max(maxValue, value));
 const getPercentFromNumber = (value, total) => Math.round(value * 100 / total);
 
-const addDensityPercentToTable = (table) => {
-    const densityValues = table.map((cells) => cells[3]);
-    const maxDensityValue = getMax(densityValues);
+const addPercentFromColumnToTable = (table, columnIndex) => {
+    const values = table.map((cells) => cells[columnIndex]);
+    const maxValue = getMax(values);
     
     const updatedTable = table.map((cells) => {
-        const densityPercent = getPercentFromNumber(Number(cells[3]), maxDensityValue);
-        return cells.concat(String(densityPercent));
+        const value = Number(cells[columnIndex]);
+        const percent = getPercentFromNumber(value, maxValue);
+        return cells.concat(String(percent));
     });
     
     return updatedTable;
+}
+
+const sortTable = (table, colIndex, type = 'desc') => {
+    return table.toSorted((row1, row2) => type === 'desc' ?
+        row2[colIndex] - row1[colIndex] : row1[colIndex] - row2[colIndex]);
 }
 
 const columnWidths = [18, 10, 8, 8, 18, 6];
@@ -55,8 +61,10 @@ const formatRow = (row) => row.reduce((line, cell, index) => {
 const outputToConsole = (array) => array.forEach((item) => console.log(item));
 
 const table = normalizeTable(data);
-const updatedTableWithDensity = addDensityPercentToTable(table);
-const sortedTableByDensity = updatedTableWithDensity.toSorted((r1, r2) => r2[5] - r1[5]);
+const densityColumnIndex = 3;
+const updatedTableWithDensity = addPercentFromColumnToTable(table, densityColumnIndex);
+const densityPercentColumnIndex = 5;
+const sortedTableByDensity = sortTable(updatedTableWithDensity, densityPercentColumnIndex)
 const prettifiedTable = sortedTableByDensity.map(formatRow);
 
 outputToConsole(prettifiedTable);
