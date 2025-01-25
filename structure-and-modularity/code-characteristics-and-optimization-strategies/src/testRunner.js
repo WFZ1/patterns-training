@@ -1,21 +1,27 @@
-export const runTests = (testConfig) => {
-    const tests = Object.entries(testConfig);
+'use strict';
 
-    const passedTestsCount = tests.reduce((sum, test, index) => {
-        const testTitle = test[0];
-        const testCase = test[1];
-        const title = `Test (${index + 1}) ${testTitle}`;
+const runTests = (testConfig) => {
+  const tests = Object.entries(testConfig);
 
-        try {
-            testCase();
-            console.log(`✅ ${title} passed`);
-            return sum + 1
-        } catch (error) {
-            console.error(`❌ ${title} failed: ${error.message}`);
-        }
+  const passedTestsCount = tests.reduce((sum, test, index) => {
+    const testTitle = test[0];
+    const testCase = test[1];
+    const title = `Test (${index + 1}) ${testTitle}`;
 
-        return sum
-    }, 0);
+    try {
+      testCase();
+      console.log(`✅ ${title} passed`);
+      return sum + 1;
+    } catch (error) {
+      console.error(`❌ ${title} failed: ${error.message}`);
+    }
 
-    console.log(`\nTest summary: ${passedTestsCount}/${tests.length} tests passed`);
-}
+    return sum;
+  }, 0);
+
+  console.log(
+    `\nTest summary: ${passedTestsCount}/${tests.length} tests passed`,
+  );
+};
+
+module.exports = { runTests };

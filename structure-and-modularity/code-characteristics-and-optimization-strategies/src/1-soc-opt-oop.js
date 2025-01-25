@@ -12,59 +12,80 @@ const data = `city,population,area,density,country
   New York City,8537673,784,10892,United States
   Bangkok,8280925,1569,5279,Thailand`;
 
-export const getMax = (values) => values.reduce((maxValue, value) => Math.max(maxValue, value));
-export const getPercentFromNumber = (value, total) => Math.round(value * 100 / total);
+const getMax = (values) =>
+  values.reduce((maxValue, value) => Math.max(maxValue, value));
 
-export class Table {
-    static normalize (data) {
-        const lines = data.split('\n');
-        const bodyLines = lines.slice(1);
-        const table = bodyLines.map((line) => line.split(','))
-        
-        return table;
-    }
+const getPercentFromNumber = (value, total) =>
+  Math.round((value * 100) / total);
 
-    static addPercentFromColumn (table, columnIndex) {
-        const values = table.map((cells) => cells[columnIndex]);
-        const maxValue = getMax(values);
-        
-        const updatedTable = table.map((cells) => {
-            const value = Number(cells[columnIndex]);
-            const percent = getPercentFromNumber(value, maxValue);
-            return cells.concat(String(percent));
-        });
-        
-        return updatedTable;
-    }
+class Table {
+  static normalize(data) {
+    const lines = data.split('\n');
+    const bodyLines = lines.slice(1);
+    const table = bodyLines.map((line) => line.trim().split(','));
 
-    static sortByColumnIndex (table, colIndex, type = 'desc') {
-        return table.toSorted((row1, row2) => type === 'desc' ?
-            row2[colIndex] - row1[colIndex] : row1[colIndex] - row2[colIndex]);
-    }
-    
-    static formatRow (row, columnWidths) {
-        return row.reduce((line, cell, index) => {
-            const columnWidth = columnWidths[index];
-            const formattedRow = index === 0 ? cell.padEnd(columnWidth) : cell.padStart(columnWidth);
-            return line + formattedRow;
-        }, '');
-    }
+    return table;
+  }
 
-    static prettify (table, columnWidths) {
-        return table.map((row) => Table.formatRow(row, columnWidths));
-    }
-    
-    static outputToConsole (table) {
-        table.forEach((row) => console.log(row));
-    }
+  static addPercentFromColumn(table, columnIndex) {
+    const values = table.map((cells) => cells[columnIndex]);
+    const maxValue = getMax(values);
+
+    const updatedTable = table.map((cells) => {
+      const value = Number(cells[columnIndex]);
+      const percent = getPercentFromNumber(value, maxValue);
+      return cells.concat(String(percent));
+    });
+
+    return updatedTable;
+  }
+
+  static sortByColumnIndex(table, colIndex, type = 'desc') {
+    return table.toSorted((row1, row2) => {
+      const compareResult = row1[colIndex] - row2[colIndex];
+      return type === 'asc' ? compareResult : compareResult * -1;
+    });
+  }
+
+  static formatRow(row, columnWidths) {
+    const formattedCells = row.map((cell, index) => {
+      const columnWidth = columnWidths[index];
+      return index ? cell.padStart(columnWidth) : cell.padEnd(columnWidth);
+    });
+    return formattedCells.join('');
+  }
+
+  static prettify(table, columnWidths) {
+    return table.map((row) => Table.formatRow(row, columnWidths));
+  }
+
+  static outputToConsole(table) {
+    table.forEach((row) => console.log(row));
+  }
 }
 
-const table = Table.normalize(data);
-const densityColumnIndex = 3;
-const updatedTableWithDensity = Table.addPercentFromColumn(table, densityColumnIndex);
-const densityPercentColumnIndex = 5;
-const sortedTableByDensity = Table.sortByColumnIndex(updatedTableWithDensity, densityPercentColumnIndex);
-const columnWidths = [18, 10, 8, 8, 18, 6];
-const prettifiedTable = Table.prettify(sortedTableByDensity, columnWidths);
+const main = (rawTable) => {
+  const table = Table.normalize(rawTable);
+  const densityColumnIndex = 3;
+  const updatedTableWithDensity = Table.addPercentFromColumn(
+    table,
+    densityColumnIndex,
+  );
+  const densityPercentColumnIndex = 5;
+  const sortedTableByDensity = Table.sortByColumnIndex(
+    updatedTableWithDensity,
+    densityPercentColumnIndex,
+  );
+  const columnWidths = [18, 10, 8, 8, 18, 6];
+  const prettifiedTable = Table.prettify(sortedTableByDensity, columnWidths);
 
-Table.outputToConsole(prettifiedTable);
+  Table.outputToConsole(prettifiedTable);
+};
+
+main(data);
+
+module.exports = {
+  getMax,
+  getPercentFromNumber,
+  Table,
+};
